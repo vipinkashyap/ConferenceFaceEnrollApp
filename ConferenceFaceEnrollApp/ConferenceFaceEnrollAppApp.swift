@@ -37,7 +37,7 @@ struct ConferenceFaceEnrollAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationView {
+            NavigationStack {
                  CameraView(savedImagePath: $savedImagePath)
             }
         }

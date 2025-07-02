@@ -35,11 +35,18 @@ struct CameraView: View {
 
     var body: some View {
         ZStack {
+//            CameraPreview(session: viewModel.session, viewModel: viewModel)
+//                .edgesIgnoringSafeArea(.all)
+//              
+//                .overlay(Circle().stroke(viewModel.isFaceDetected ? Color.green : Color.white, lineWidth: 4))
             CameraPreview(session: viewModel.session, viewModel: viewModel)
-                .frame(width: 300, height: 300)
-                .clipShape(Circle())
-                .overlay(Circle().stroke(viewModel.isFaceDetected ? Color.green : Color.white, lineWidth: 4))
-
+                .ignoresSafeArea()
+                .overlay(
+                    Circle()
+                        .stroke(viewModel.isFaceDetected ? Color.green : Color.white, lineWidth: 4)
+                        .frame(width: 300, height: 300)
+                        .position(x: UIScreen.main.bounds.midX, y: UIScreen.main.bounds.midY)
+                )
             VStack {
                 Text("Snap & Sign Up!")
                     .font(.title2).bold().padding(.top, 50)
