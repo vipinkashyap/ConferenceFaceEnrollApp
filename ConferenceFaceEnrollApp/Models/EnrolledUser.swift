@@ -11,7 +11,7 @@ import Vision
 // MARK: - SwiftData Model
 
 @Model
-final class EnrolledUser {
+final class EnrolledUser: Identifiable {
     var id: UUID
     var username: String
     var imagePath: String
@@ -31,14 +31,3 @@ final class EnrolledUser {
 
 
 
-// MARK: - App Entry
-
-// @main
-// struct ConferenceFaceEnrollApp: App {
-//     var body: some Scene {
-//         WindowGroup {
-//             CameraView()
-//         }
-//         .modelContainer(for: EnrolledUser.self)
-//     }
-// }

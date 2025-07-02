@@ -28,6 +28,7 @@ class CameraViewModel: NSObject, ObservableObject {
     @Published var capturedImage: UIImage?
     @Published var navigateToPreview = false
     @Published var isFaceDetected: Bool = false
+    @Published var savedImagePath: String?
 
 
     override init() {
@@ -205,10 +206,10 @@ class CameraViewModel: NSObject, ObservableObject {
         let squareSize = min(croppedImage.size.width, croppedImage.size.height)
         let origin = CGPoint(x: (croppedImage.size.width - squareSize)/2,
                              y: (croppedImage.size.height - squareSize)/2)
-        let squareCropRect = CGRect(origin: origin, size: CGSize(width: squareSize, height: squareSize))
+        _ = CGRect(origin: origin, size: CGSize(width: squareSize, height: squareSize))
 
         UIGraphicsBeginImageContextWithOptions(CGSize(width: squareSize, height: squareSize), false, image.scale)
-        let context = UIGraphicsGetCurrentContext()!
+        _ = UIGraphicsGetCurrentContext()!
 
         let circlePath = UIBezierPath(ovalIn: CGRect(origin: .zero, size: CGSize(width: squareSize, height: squareSize)))
         circlePath.addClip()
@@ -236,8 +237,29 @@ extension CameraViewModel: AVCapturePhotoCaptureDelegate {
                     return
                 }
 
-                let cropped = self.cropToPreviewCircle(from: image, previewSize: CGSize(width: 300, height: 300), previewLayer: previewLayer)
+                let cropped = self.cropToPreviewCircle(
+                    from: image,
+                    previewSize: CGSize(width: 300, height: 300),
+                    previewLayer: previewLayer
+                )
+
                 self.capturedImage = cropped
+
+                // 🆕 Save image to disk
+                if let data = cropped.jpegData(compressionQuality: 0.9) {
+                    let filename = UUID().uuidString + ".jpg"
+                    let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                        .appendingPathComponent(filename)
+
+                    do {
+                        try data.write(to: fileURL)
+                        print("✅ Saved image to Documents at: \(fileURL.path)")
+                        self.savedImagePath = filename
+                    } catch {
+                        print("❌ Failed to save image: \(error)")
+                    }
+                }
+
                 self.navigateToPreview = true
             }
         }

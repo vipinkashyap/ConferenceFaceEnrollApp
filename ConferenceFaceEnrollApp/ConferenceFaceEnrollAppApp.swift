@@ -10,6 +10,8 @@ import SwiftData
 
 @main
 struct ConferenceFaceEnrollAppApp: App {
+    @State private var savedImagePath:String?
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -27,7 +29,7 @@ struct ConferenceFaceEnrollAppApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                 CameraView()
+                 CameraView(savedImagePath: $savedImagePath)
             }
         }
         .modelContainer(sharedModelContainer)

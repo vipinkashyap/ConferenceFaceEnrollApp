@@ -14,6 +14,7 @@ import SwiftUI
 // MARK: - Preview View
 
 struct PreviewView: View {
+    @Binding var savedImagePath: String?
     let image: UIImage
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -113,7 +114,14 @@ struct PreviewView: View {
     func signUp() {
         isLoading = true
 
-        let newUser = EnrolledUser(username: username, imagePath: "local-path-placeholder")
+        guard let imagePath = savedImagePath else {
+            toastMessage = "Image not captured!"
+            showToast = true
+            isLoading = false
+            return
+        }
+
+        let newUser = EnrolledUser(username: username, imagePath: imagePath)
         modelContext.insert(newUser)
 
         NetworkService.shared.signUp(username: username) { result in

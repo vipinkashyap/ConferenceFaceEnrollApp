@@ -13,6 +13,7 @@ import AVFoundation
 // MARK: - CameraView
 
 struct CameraView: View {
+    @Binding var savedImagePath: String?
     @StateObject private var viewModel = CameraViewModel()
 
     var body: some View {
@@ -52,11 +53,14 @@ struct CameraView: View {
                 .padding(.bottom, 40)
             }
         }
+        .onReceive(viewModel.$savedImagePath) {
+            newPath in self.savedImagePath = newPath
+        }
         .background(Color.black.edgesIgnoringSafeArea(.all))
         .onAppear { viewModel.configure() }
         .sheet(isPresented: $viewModel.navigateToPreview) {
             if let image = viewModel.capturedImage {
-                PreviewView(image: image)
+                PreviewView(savedImagePath: $savedImagePath, image: image)
             }
         }
     }
@@ -67,6 +71,7 @@ struct CameraView: View {
 struct CameraPreview: UIViewRepresentable {
     let session: AVCaptureSession
     @ObservedObject var viewModel: CameraViewModel
+    
 
     func makeUIView(context: Context) -> UIView {
         let view = LiveCameraUIView()
