@@ -13,6 +13,7 @@ struct ConferenceFaceEnrollAppApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
+            EnrolledUser.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,7 +26,9 @@ struct ConferenceFaceEnrollAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationView {
+                 CameraView()
+            }
         }
         .modelContainer(sharedModelContainer)
     }

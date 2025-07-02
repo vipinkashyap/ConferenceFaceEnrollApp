@@ -1,3 +1,11 @@
+//
+//  SecretStatsView.swift
+//  ConferenceFaceEnrollApp
+//
+//  Created by Vipin Kumar Kashyap on 7/1/25.
+//
+
+
 import SwiftUI
 import SwiftData
 

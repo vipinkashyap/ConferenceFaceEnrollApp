@@ -108,11 +108,7 @@ struct PreviewView: View {
         }
     }
 
-    struct SimpleResponse: Decodable {
-        let id: Int
-        let username: String?
-        let note: String?
-    }
+
 
     func signUp() {
         isLoading = true
@@ -120,23 +116,14 @@ struct PreviewView: View {
         let newUser = EnrolledUser(username: username, imagePath: "local-path-placeholder")
         modelContext.insert(newUser)
 
-        let params: [String: Any] = [
-            "username": username,
-            "note": "Test signup without image upload"
-        ]
-
-        AF.request("https://jsonplaceholder.typicode.com/posts",
-                   method: .post,
-                   parameters: params,
-                   encoding: JSONEncoding.default)
-        .responseDecodable(of: SimpleResponse.self) { response in
+        NetworkService.shared.signUp(username: username) { result in
             DispatchQueue.main.async {
                 isLoading = false
-                switch response.result {
-                case .success(let value):
+                switch result {
+                case .success(let response):
                     newUser.faceID = "test-face-id-1234"
                     newUser.status = .uploaded
-                    toastMessage = "Signed up! Response ID: \(value.id)"
+                    toastMessage = "Signed up! Response ID: \(response.id)"
                     didSignUp = true
                 case .failure(let error):
                     newUser.status = .failed
@@ -150,43 +137,6 @@ struct PreviewView: View {
 }
 
 
-//    func signUp() {
-//        isLoading = true
-//
-//        let fileName = UUID().uuidString + ".jpg"
-//        let path = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-//        guard let data = image.jpegData(compressionQuality: 0.8) else { return }
-//        try? data.write(to: path)
-//
-//        let newUser = EnrolledUser(username: username, imagePath: path.path)
-//        modelContext.insert(newUser)
-//
-//        AF.upload(multipartFormData: { form in
-//            form.append(data, withName: "photo", fileName: fileName, mimeType: "image/jpeg")
-//            form.append(Data(username.utf8), withName: "username")
-//        }, to: "https://your.api.endpoint/register-face")
-//        .responseDecodable(of: APIResponse.self) { response in
-//            DispatchQueue.main.async {
-//                isLoading = false
-//                switch response.result {
-//                case .success(let api):
-//                    if api.status, let faceID = api.face_id {
-//                        newUser.faceID = faceID
-//                        newUser.status = .uploaded
-//                        toastMessage = "Signed up with Face ID: \(faceID.prefix(8))"
-//                    } else {
-//                        newUser.status = .failed
-//                        toastMessage = api.message
-//                    }
-//                    try? modelContext.save()
-//                case .failure(let error):
-//                    newUser.status = .failed
-//                    toastMessage = error.localizedDescription
-//                }
-//                showToast = true
-//            }
-//        }
-//    }
 
 extension View {
     func hideKeyboard() {

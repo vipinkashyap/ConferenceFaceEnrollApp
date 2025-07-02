@@ -1,3 +1,11 @@
+//
+//  NetworkService.swift
+//  ConferenceFaceEnrollApp
+//
+//  Created by Vipin Kumar Kashyap on 7/1/25.
+//
+
+
 import Foundation
 import Alamofire
 
@@ -36,4 +44,43 @@ final class NetworkService {
             completion(response.result)
         }
     }
+    
+    
+    //    func signUp() {
+    //        isLoading = true
+    //
+    //        let fileName = UUID().uuidString + ".jpg"
+    //        let path = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+    //        guard let data = image.jpegData(compressionQuality: 0.8) else { return }
+    //        try? data.write(to: path)
+    //
+    //        let newUser = EnrolledUser(username: username, imagePath: path.path)
+    //        modelContext.insert(newUser)
+    //
+    //        AF.upload(multipartFormData: { form in
+    //            form.append(data, withName: "photo", fileName: fileName, mimeType: "image/jpeg")
+    //            form.append(Data(username.utf8), withName: "username")
+    //        }, to: "https://your.api.endpoint/register-face")
+    //        .responseDecodable(of: APIResponse.self) { response in
+    //            DispatchQueue.main.async {
+    //                isLoading = false
+    //                switch response.result {
+    //                case .success(let api):
+    //                    if api.status, let faceID = api.face_id {
+    //                        newUser.faceID = faceID
+    //                        newUser.status = .uploaded
+    //                        toastMessage = "Signed up with Face ID: \(faceID.prefix(8))"
+    //                    } else {
+    //                        newUser.status = .failed
+    //                        toastMessage = api.message
+    //                    }
+    //                    try? modelContext.save()
+    //                case .failure(let error):
+    //                    newUser.status = .failed
+    //                    toastMessage = error.localizedDescription
+    //                }
+    //                showToast = true
+    //            }
+    //        }
+    //    }
 }
