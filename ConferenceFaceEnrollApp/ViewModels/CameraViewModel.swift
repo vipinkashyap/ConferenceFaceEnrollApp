@@ -8,6 +8,8 @@
 import Foundation
 import AVFoundation
 import UIKit
+import Vision
+import Combine
 
 
 
@@ -18,11 +20,15 @@ class CameraViewModel: NSObject, ObservableObject {
     private var photoOutput = AVCapturePhotoOutput()
     private var videoDeviceInput: AVCaptureDeviceInput!
     var previewLayer: AVCaptureVideoPreviewLayer?
+    private let sequenceHandler = VNSequenceRequestHandler()
+    private var videoDataOutput = AVCaptureVideoDataOutput()
     
 
     @Published var isFlashOn = false
     @Published var capturedImage: UIImage?
     @Published var navigateToPreview = false
+    @Published var isFaceDetected: Bool = false
+
 
     override init() {
         super.init()
@@ -64,6 +70,13 @@ class CameraViewModel: NSObject, ObservableObject {
 
         if session.canAddOutput(photoOutput) {
             session.addOutput(photoOutput)
+        }
+        // Add video data output for Vision
+        videoDataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "Vision.FaceDetection"))
+        videoDataOutput.alwaysDiscardsLateVideoFrames = true
+
+        if session.canAddOutput(videoDataOutput) {
+            session.addOutput(videoDataOutput)
         }
 
         session.commitConfiguration()
@@ -107,6 +120,26 @@ class CameraViewModel: NSObject, ObservableObject {
         }
 
         session.commitConfiguration()
+    }
+    
+    private func detectFace(in sampleBuffer: CMSampleBuffer) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+
+        let request = VNDetectFaceRectanglesRequest { [weak self] request, error in
+            DispatchQueue.main.async {
+                guard let results = request.results as? [VNFaceObservation] else {
+                    self?.isFaceDetected = false
+                    return
+                }
+                self?.isFaceDetected = !results.isEmpty
+            }
+        }
+
+        do {
+            try sequenceHandler.perform([request], on: pixelBuffer, orientation: .leftMirrored)
+        } catch {
+            print("Face detection failed: \(error)")
+        }
     }
 
     private func cropCenterSquare(from image: UIImage) -> UIImage {
@@ -208,5 +241,14 @@ extension CameraViewModel: AVCapturePhotoCaptureDelegate {
                 self.navigateToPreview = true
             }
         }
+    }
+}
+
+
+extension CameraViewModel: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(_ output: AVCaptureOutput,
+                       didOutput sampleBuffer: CMSampleBuffer,
+                       from connection: AVCaptureConnection) {
+        detectFace(in: sampleBuffer)
     }
 }

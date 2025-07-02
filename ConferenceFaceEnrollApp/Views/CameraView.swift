@@ -20,7 +20,7 @@ struct CameraView: View {
             CameraPreview(session: viewModel.session, viewModel: viewModel)
                 .frame(width: 300, height: 300)
                 .clipShape(Circle())
-                .overlay(Circle().stroke(Color.white, lineWidth: 4))
+                .overlay(Circle().stroke(viewModel.isFaceDetected ? Color.green : Color.white, lineWidth: 4))
 
             VStack {
                 Text("Snap & Sign Up!")
