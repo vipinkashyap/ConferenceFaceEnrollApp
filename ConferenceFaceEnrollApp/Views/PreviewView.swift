@@ -4,6 +4,15 @@
 //
 //  Created by Vipin Kumar Kashyap on 7/1/25.
 //
+//  This file defines the `PreviewView`, which allows users to preview their captured image, enter their username, and sign up.
+//
+//  Key Features:
+//  - Displays the captured image in a circular frame.
+//  - Provides a text field for entering the username.
+//  - Includes buttons for retaking the photo, signing up, and signing up a new user.
+//  - Shows a progress indicator during the sign-up process.
+//  - Displays toast messages for success or failure feedback.
+//
 
 
 import Alamofire
@@ -12,6 +21,16 @@ import UIKit
 import SwiftUI
 
 // MARK: - Preview View
+
+/**
+ * The `PreviewView` struct represents the interface for previewing the captured image and signing up.
+ *
+ * - Parameters:
+ *   - savedImagePath: A binding to the file path of the saved image.
+ *   - image: The captured image to display.
+ *
+ * The view integrates with the `modelContext` for saving user data and uses the `NetworkService` for signing up.
+ */
 
 struct PreviewView: View {
     @Binding var savedImagePath: String?
@@ -111,6 +130,14 @@ struct PreviewView: View {
 
 
 
+    /**
+     * The `signUp` function handles the user sign-up process.
+     *
+     * - Validates the captured image path and username.
+     * - Creates a new `EnrolledUser` object and inserts it into the `modelContext`.
+     * - Sends a sign-up request to the server using `NetworkService`.
+     * - Updates the UI based on the success or failure of the sign-up process.
+     */
     func signUp() {
         isLoading = true
 
@@ -147,6 +174,9 @@ struct PreviewView: View {
 
 
 extension View {
+    /**
+     * The `hideKeyboard` extension method allows dismissing the keyboard programmatically.
+     */
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }

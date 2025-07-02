@@ -4,15 +4,41 @@
 //
 //  Created by Vipin Kumar Kashyap on 7/1/25.
 //
-
+//  This file defines the `NetworkService` class, which provides networking functionality for the app.
+//  It uses Alamofire to handle HTTP requests and responses.
+//
+//  Key Features:
+//  - Singleton instance for centralized network operations.
+//  - Provides methods for user sign-up with or without photo upload.
+//
 
 import Foundation
 import Alamofire
+
+// MARK: - NetworkService
+
+/**
+ * The `NetworkService` class handles API calls for the app.
+ *
+ * - Methods:
+ *   - `signUp(username:completion:)`: Sends a sign-up request with the username.
+ *   - `signUpWithPhoto(username:photoData:completion:)`: Sends a sign-up request with the username and photo data.
+ *
+ * This class uses Alamofire for making HTTP requests and decoding responses.
+ */
 
 final class NetworkService {
     static let shared = NetworkService()
 
     private init() {}
+
+    /**
+     * The `signUp` method sends a simple sign-up request with the username.
+     *
+     * - Parameters:
+     *   - username: The username to sign up.
+     *   - completion: A closure to handle the result of the API call.
+     */
 
     // Simple sign-up API call example, parameters as dictionary
     func signUp(username: String, completion: @escaping (Result<SimpleResponse, AFError>) -> Void) {
@@ -30,6 +56,15 @@ final class NetworkService {
               completion(response.result)
           }
     }
+
+    /**
+     * The `signUpWithPhoto` method sends a sign-up request with the username and photo data.
+     *
+     * - Parameters:
+     *   - username: The username to sign up.
+     *   - photoData: The photo data to upload.
+     *   - completion: A closure to handle the result of the API call.
+     */
 
     // Upload photo + username example, you can extend this
     func signUpWithPhoto(username: String, photoData: Data, completion: @escaping (Result<APIResponse, AFError>) -> Void) {

@@ -4,6 +4,34 @@
 //
 //  Created by Vipin Kumar Kashyap on 7/1/25.
 //
+//  This file defines the `CameraViewModel` class, which serves as the ViewModel for the `CameraView`.
+//  It handles camera configuration, photo capture, face detection, and image processing.
+//
+//  Key Features:
+//  - Configures the `AVCaptureSession` for video and photo capture.
+//  - Provides methods to toggle flash, switch cameras, and capture photos.
+//  - Detects faces using Vision framework and updates the UI accordingly.
+//  - Crops and saves captured images to disk.
+//
+
+
+// MARK: - CameraViewModel
+
+/**
+ * The `CameraViewModel` class manages the camera session and provides functionality for:
+ * - Configuring the camera session.
+ * - Capturing photos with optional flash.
+ * - Switching between front and back cameras.
+ * - Detecting faces using Vision framework.
+ * - Cropping and saving images to disk.
+ *
+ * Published Properties:
+ * - `isFlashOn`: Indicates whether the flash is enabled.
+ * - `capturedImage`: Stores the most recently captured image.
+ * - `navigateToPreview`: Triggers navigation to the preview screen.
+ * - `isFaceDetected`: Indicates whether a face is detected in the camera feed.
+ * - `savedImagePath`: Stores the file path of the saved image.
+ */
 
 import Foundation
 import AVFoundation

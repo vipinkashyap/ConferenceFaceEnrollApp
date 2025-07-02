@@ -4,6 +4,14 @@
 //
 //  Created by Vipin Kumar Kashyap on 7/1/25.
 //
+//  This file defines the `CameraView` which is the main interface for capturing photos.
+//  It integrates with the camera hardware using `AVFoundation` and provides a user-friendly UI for photo capture.
+//
+//  The view includes:
+//  - A live camera preview displayed in a circular frame.
+//  - Buttons for toggling flash, capturing a photo, and switching the camera.
+//  - A sheet to preview the captured image.
+//
 
 import SwiftUICore
 import SwiftUI
@@ -11,6 +19,15 @@ import AVFoundation
 
 
 // MARK: - CameraView
+
+/**
+ * The `CameraView` struct represents the main camera interface.
+ *
+ * - Parameters:
+ *   - savedImagePath: A binding to store the path of the saved image.
+ *
+ * The view uses a `CameraViewModel` to manage camera-related logic and state.
+ */
 
 struct CameraView: View {
     @Binding var savedImagePath: String?
@@ -68,6 +85,14 @@ struct CameraView: View {
 
 // MARK: - Camera Preview Wrapper
 
+/**
+ * The `CameraPreview` struct wraps the `AVCaptureSession` in a SwiftUI-compatible view.
+ *
+ * - Parameters:
+ *   - session: The `AVCaptureSession` used for capturing video input.
+ *   - viewModel: The `CameraViewModel` to manage camera state and interactions.
+ */
+
 struct CameraPreview: UIViewRepresentable {
     let session: AVCaptureSession
     @ObservedObject var viewModel: CameraViewModel
@@ -85,6 +110,12 @@ struct CameraPreview: UIViewRepresentable {
         uiView.layoutIfNeeded()
     }
 }
+
+/**
+ * The `LiveCameraUIView` class provides a `UIView` with a `AVCaptureVideoPreviewLayer`.
+ *
+ * This class is used to display the live camera feed in the `CameraPreview`.
+ */
 
 final class LiveCameraUIView: UIView {
     override class var layerClass: AnyClass {
