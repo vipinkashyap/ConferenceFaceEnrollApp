@@ -123,16 +123,26 @@ class CameraViewModel: NSObject, ObservableObject {
         session.commitConfiguration()
     }
     
+
     private func detectFace(in sampleBuffer: CMSampleBuffer) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
-        let request = VNDetectFaceRectanglesRequest { [weak self] request, error in
+        let request = VNDetectFaceLandmarksRequest { [weak self] request, error in
             DispatchQueue.main.async {
-                guard let results = request.results as? [VNFaceObservation] else {
+                guard let results = request.results as? [VNFaceObservation], let face = results.first else {
                     self?.isFaceDetected = false
                     return
                 }
-                self?.isFaceDetected = !results.isEmpty
+
+                // Check for key landmarks to verify full face visibility
+                let landmarks = face.landmarks
+                let hasFullFace = landmarks?.leftEye != nil &&
+                                  landmarks?.rightEye != nil &&
+                                  landmarks?.nose != nil &&
+                                  landmarks?.outerLips != nil &&
+                                  landmarks?.faceContour != nil
+
+                self?.isFaceDetected = hasFullFace
             }
         }
 
