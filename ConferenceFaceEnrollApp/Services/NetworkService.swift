@@ -21,7 +21,7 @@ final class NetworkService {
             "note": "Test signup without image upload"
         ]
 
-        AF.request("https://jsonplaceholder.typicode.com/psts",
+        AF.request("https://jsonplaceholder.typicode.com/posts",
                    method: .post,
                    parameters: params,
                    encoding: JSONEncoding.default)
